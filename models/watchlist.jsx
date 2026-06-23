@@ -12,12 +12,12 @@ const WatchlistSchema = new mongoose.Schema({
     required: true,
   },
 
-  title: String,
+  title: { type: String, required: true },
 
-  image: String,
-
-  score: Number,
-
+  image: { type: String, required: true },
+  score: { type: Number, required: true },
+  rating: { type: Number, required: true },
+  episodes: { type: Number, required: true },
   status: {
     type: String,
     default: "watchlist",

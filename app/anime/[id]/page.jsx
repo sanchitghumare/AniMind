@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import WatchlistButton from "@/components/ui/watchlistbutton";
 export default async function AnimeDetailsPage({ params }) {
   const { id } =await  params;
   const anime = await getAnime(id);
@@ -31,7 +32,8 @@ export default async function AnimeDetailsPage({ params }) {
           className="rounded-xl mt-6"
         />
       )}
-      <button className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600 transition-all"> + Add to Watchlist</button>
+       <WatchlistButton anime={anime} />
+      
      </div>
       <div>
         <h1 className="text-5xl font-bold mb-4">
