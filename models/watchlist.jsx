@@ -21,8 +21,14 @@ const WatchlistSchema = new mongoose.Schema({
   status: {
     type: String,
     default: "watchlist",
-    enum: ["watching", "completed", "dropped"]
+    enum: ["watchlist", "watching", "completed", "dropped"]
   },
+  userRating: {
+  type: Number,
+  min: 1,
+  max: 10,
+  default: null,
+}
 
 }, { timestamps: true });
 

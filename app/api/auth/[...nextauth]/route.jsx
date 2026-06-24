@@ -44,9 +44,9 @@ export const authOptions = {
         const dbUser = await User.findOne({ email: session.user.email });
 
         if (dbUser?.username) {
+          session.user.id = dbUser._id.toString();
           session.user.name = dbUser.username;
           session.user.username = dbUser.username;
-          // Backward-compatible top-level field used elsewhere in this codebase.
           session.username = dbUser.username;
         }
 

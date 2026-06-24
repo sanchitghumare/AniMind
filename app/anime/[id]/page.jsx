@@ -62,6 +62,9 @@ export default async function AnimeDetailsPage({ params }) {
           {anime.synopsis}
         </p>
          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-6">
+          <h2 className="text-2xl font-semibold mb-3 col-span-full">
+            You may also like:
+          </h2>
             {recommendations.slice(0, 4).map((rec) => (
               <Card className="bg-black text-white  hover: scale-105 transition-all hover:bg-zinc-700" key={rec.entry.mal_id}>
                 <Link href={`/anime/${rec.entry.mal_id}`} className="w-full">

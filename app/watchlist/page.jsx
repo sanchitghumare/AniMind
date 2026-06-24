@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import RemoveWatchlistButton from "@/components/ui/removewatchlist";
 import StatusDropdown from "@/components/ui/statusdropdown";
 import StatusFilter from "@/components/ui/statusfilter";
+import RatingDropdown from "@/components/RatingDropdown";
 export default async function WatchlistPage({searchParams}) {
     const params= await searchParams;
     const status=params?.status || "all";
@@ -96,9 +97,14 @@ export default async function WatchlistPage({searchParams}) {
                                     <RemoveWatchlistButton animeId={anime.animeId} />
                                 </div>
                                 <div className="flex items-center justify-between mt-2">
+                                <div className="flex flex-col items-start">
                                 <p className="text-sm text-zinc-400 ">
-                                    ⭐ {anime.rating ?? "N/A"}
+                                    ⭐ {anime.rating ?? "N/A"} 
                                 </p>
+                                <p className="text-sm text-zinc-400 ">
+                                    <RatingDropdown animeId={anime.animeId} currentRating={anime.userRating} /> 
+                                </p>
+                                </div>
                                  <StatusDropdown currentStatus={anime.status} animeId={anime.animeId} />
                               </div>
                                 <p className="text-sm text-zinc-400 ">
