@@ -14,7 +14,7 @@ export default async function fetchTasteProfile() {
     const entries = await Watchlist.find({
         userId: session.user.id,
         userRating: { $ne: null }
-    }).select("animeId userRating");
+    }).select("animeId title userRating");
     const genreScores={};
     const themesScores={};
     for(const entry of entries){
@@ -36,6 +36,13 @@ export default async function fetchTasteProfile() {
             }
         });
     }
+    const topRatedAnime = await Watchlist.find({
+      userId: session.user.id,
+      userRating: { $ne: null }
+    })
+    .sort({ userRating: -1 })
+    .limit(5)
+    .select("animeId title userRating");
     const topGenres = Object.entries(genreScores)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
@@ -46,15 +53,21 @@ export default async function fetchTasteProfile() {
     .map(([name, score]) => ({ name, score }));
     await TasteProfile.findOneAndUpdate(
       { userId: session.user.id },
-      { topGenres,
-        topThemes
+      {
+        topGenres,
+        topThemes,
+        topRatedAnime,
       },
       { upsert: true, new: true }
     );
+     
     return {
+    userId: session.user.id,  
     topGenres,
     topThemes,
+    topRatedAnime
     };
+  
   } catch (error) {
     console.error("Error fetching taste profile:", error);
     throw new Error("Failed to fetch taste profile");

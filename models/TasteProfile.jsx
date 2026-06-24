@@ -20,9 +20,18 @@ const TasteProfileSchema = new mongoose.Schema({
       score: Number,
     },
   ],
+     topRatedAnime: [
+    {
+      animeId: Number,
+      title: String,
+      userRating: Number,
+    }
+  ],
 
+  archetype: String,
   aiSummary: String,
-
+  recommendationDirections: [String],
+  lastGenerated: Date,
   updatedAt: {
     type: Date,
     default: Date.now,
