@@ -29,14 +29,14 @@ return ( <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 
     <div className="flex items-center gap-10">
       <Link
         href="/"
-        className="hover:text-primary transition-colors"
+        className="hover:text-primary transition-colors hover:bg-accent hover:rounded-lg px-3 py-2"
       >
         Home
       </Link>
 
       <Link
         href="/watchlist"
-        className="flex items-center gap-2 hover:text-primary transition-colors"
+        className="flex items-center gap-2 hover:text-primary transition-colors hover:bg-accent hover:rounded-lg px-3 py-2"
       >
         <Bookmark size={18} />
         Watchlist
@@ -44,7 +44,7 @@ return ( <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 
 
       <Link
         href="/advisor"
-        className="flex items-center gap-2 hover:text-primary transition-colors"
+        className="flex items-center gap-2 hover:text-primary transition-colors hover:bg-accent hover:rounded-lg px-3 py-2"
       >
         <Sparkles size={18} />
         AI Advisor

@@ -24,8 +24,8 @@ export default function Home() {
     <main className="bg-black text-white min-h-screen">
   
       <div className="flex flex-col items-center justify-center  py-2">
-        {/* <h1 className="text-3xl font-bold text-blue-500 py-5">AniMind</h1>
-         */}
+        { <h1 className="text-3xl font-bold text-blue-500 py-5">AniMind</h1>
+         }
         
         <p className="text-lg text-center">
           Get personalized anime recommendations based on your preferences.

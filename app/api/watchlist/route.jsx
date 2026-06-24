@@ -36,4 +36,50 @@ export async function POST(request) {
     return NextResponse.json({ error: "Failed to add anime to watchlist" }, { status: 500 });
    }
 }
-
+export async function DELETE(request) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) {
+            return NextResponse.json({ error: "Please sign in to remove from watchlist" }, { status: 401 });
+        }
+        const { animeId } = await request.json();
+        await ConnectDb();
+        const user = await User.findOne({ email: session.user.email });
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+        const existing = await Watchlist.findOne({ userId: user._id, animeId });
+        if (!existing) {
+            return NextResponse.json({ error: "Anime not found in watchlist" }, { status: 404 });
+        }
+        await Watchlist.deleteOne({ userId: user._id, animeId });
+        return NextResponse.json({ message: "Anime removed from watchlist" }, { status: 200 });
+    } catch (error) {
+        console.error("Error removing anime from watchlist:", error);
+        return NextResponse.json({ error: "Failed to remove anime from watchlist" }, { status: 500 });
+    }
+}
+export async function PATCH(request) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) {
+            return NextResponse.json({ error: "Please sign in to update watchlist" }, { status: 401 });
+        }
+        const { animeId, status } = await request.json();
+        await ConnectDb();
+        const user = await User.findOne({ email: session.user.email });
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+        const existing = await Watchlist.findOne({ userId: user._id, animeId });
+        if (!existing) {
+            return NextResponse.json({ error: "Anime not found in watchlist" }, { status: 404 });
+        }
+        existing.status = status;
+        await existing.save();
+        return NextResponse.json({ message: "Watchlist updated successfully" }, { status: 200 });
+    } catch (error) {
+        console.error("Error updating watchlist:", error);
+        return NextResponse.json({ error: "Failed to update watchlist" }, { status: 500 });
+    }   
+}

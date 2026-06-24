@@ -31,7 +31,7 @@ export default function WatchlistButton({ anime }) {
             toast.error("Error adding to watchlist:", error);
         }
     }
-
+    
     return (
         <button 
             className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600 transition-all" 
@@ -39,5 +39,6 @@ export default function WatchlistButton({ anime }) {
         >
             + Add to Watchlist
         </button>
+        
     );
 }
