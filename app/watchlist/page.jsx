@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import RemoveWatchlistButton from "@/components/ui/removewatchlist";
 import StatusDropdown from "@/components/ui/statusdropdown";
 import StatusFilter from "@/components/ui/statusfilter";
-import RatingDropdown from "@/components/RatingDropdown";
+import RatingDropdown from "@/components/ui/RatingDropdown";
 export default async function WatchlistPage({searchParams}) {
     const params= await searchParams;
     const status=params?.status || "all";

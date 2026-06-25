@@ -1,11 +1,13 @@
-"use client"; 
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useState } from "react";
 import {searchAnime} from "@/lib/jikan";
 import { useRouter } from "next/navigation";
+import RecommendationSection from "@/components/ui/RecommendationSection";
 export default function dashboard() {
+  
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
 
@@ -31,6 +33,7 @@ export default function dashboard() {
         </Button>
           
         </div>
+        <RecommendationSection />
     </main>
   );
 }

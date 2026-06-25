@@ -4,10 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export default async function AnimePage({ searchParams }) {
     const { query } = await searchParams;
     // console.log("Query:", query);
     const results = await searchAnime(query);
+    const session = await getServerSession(authOptions);
 
     return (
         <main className="bg-black text-white min-h-screen mx-auto px-6 py-1">
@@ -41,7 +44,7 @@ export default async function AnimePage({ searchParams }) {
                             <CardContent className="p-0">
                                 <Image
                                     src={anime.images.jpg.image_url}
-                                    alt={anime.title}
+                                    alt={anime.title_english || anime.title}
                                     width={200}
                                     height={200}
                                     // onclick={()=>}
@@ -50,7 +53,7 @@ export default async function AnimePage({ searchParams }) {
 
                                 <div className="p-4">
                                     <h2 className="font-semibold text-zinc-400  text-xl line-clamp-2">
-                                        {anime.title}
+                                        {anime.title_english || anime.title}
                                     </h2>
 
                                     <p className="text-sm text-zinc-400 ">
@@ -67,6 +70,7 @@ export default async function AnimePage({ searchParams }) {
                 ))}
 
             </div>
+           
         </main>
     );
 }

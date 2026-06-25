@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Bookmark, Sparkles, User, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 export default function Navbar() {
-const { data: session } = useSession();
-return ( <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 backdrop-blur" style={{ backgroundColor: "#374151" }}> <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-5">
+  const { data: session } = useSession();
+  return (<nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 backdrop-blur" style={{ backgroundColor: "#374151" }}> <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-5">
 
     {/* Logo */}
     <Link
@@ -21,14 +20,14 @@ return ( <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 
         <h1 className="text-2xl font-bold">
           AniMind
         </h1>
-       
+
       </div>
     </Link>
 
     {/* Navigation */}
     <div className="flex items-center gap-10">
       <Link
-        href="/"
+        href={`/${session?.user?.username}`}
         className="hover:text-primary transition-colors hover:bg-accent hover:rounded-lg px-3 py-2"
       >
         Home
@@ -43,7 +42,7 @@ return ( <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 
       </Link>
 
       <Link
-        href="/advisor"
+        href="/chat"
         className="flex items-center gap-2 hover:text-primary transition-colors hover:bg-accent hover:rounded-lg px-3 py-2"
       >
         <Sparkles size={18} />
@@ -67,9 +66,9 @@ return ( <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 
             onClick={() => signOut()}
             className="rounded-lg p-2 hover:bg-accent"
           >
-            <LogOut size={20} 
+            <LogOut size={20}
             />
-            
+
           </button>
         </>
       ) : (
@@ -83,6 +82,6 @@ return ( <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 
     </div>
 
   </div>
-</nav>
-);
+  </nav>
+  );
 }
