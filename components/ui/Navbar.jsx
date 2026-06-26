@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { Bookmark, Sparkles, User, LogOut } from "lucide-react";
 export default function Navbar() {
   const { data: session } = useSession();
-  return (<nav className="sticky top-0 z-50 border-b border-zinc-800 bg-gray-700 backdrop-blur" style={{ backgroundColor: "#374151" }}> <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-5">
+  return (<nav className="sticky top-0 z-50 h-24 border-b border-zinc-800 bg-gray-700 backdrop-blur" style={{ backgroundColor: "#374151" }}> <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-5">
 
     {/* Logo */}
     <Link
@@ -27,8 +27,8 @@ export default function Navbar() {
     {/* Navigation */}
     <div className="flex items-center gap-10">
       <Link
-        href={`/${session?.user?.username}`}
-        className="hover:text-primary transition-colors hover:bg-accent hover:rounded-lg px-3 py-2"
+       {...session ? { href: `/${session.user.username}` } : { href: "/" }}
+       className="hover:text-primary transition-colors hover:bg-accent hover:rounded-lg px-3 py-2"
       >
         Home
       </Link>

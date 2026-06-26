@@ -1,22 +1,26 @@
-
+"use client";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-export default  function RecommendationSection() {
-    "use client";
-
+import { useSession } from "next-auth/react";
+export default function RecommendationSection() {
     const [recommendations, setRecommendations] = useState([]);
-
+    const { data: session } = useSession();
     useEffect(() => {
+           if (!session) return;
         async function fetchRecommendations() {
             const res = await fetch("/api/recommendations");
             const data = await res.json();
+            if (!res.ok) {
+                setRecommendations([]);
+                return;
+            }
             setRecommendations(data);
         }
 
         fetchRecommendations();
-    }, []);
+    }, [session]);
     if (!recommendations || recommendations.length === 0) {
         return (
             <div className="p-10">

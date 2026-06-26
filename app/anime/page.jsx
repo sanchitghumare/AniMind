@@ -13,7 +13,7 @@ export default async function AnimePage({ searchParams }) {
     const session = await getServerSession(authOptions);
 
     return (
-        <main className="bg-black text-white min-h-screen mx-auto px-6 py-1">
+        <main className="bg-black text-white min-h-screen w-full px-6 py-1">
             {/* <h1 className="text-3xl font-bold text-blue-500 py-5 text-center">AniMind</h1> */}
             <div className="flex flex-row items-center justify-center gap-4">
                 <form
@@ -37,6 +37,15 @@ export default async function AnimePage({ searchParams }) {
             <p className="text-2xl items-center text-center justify-center font-bold mb-8">
                 Search Results: {results.length} for {query}
             </p>
+            {results.length === 0 && (
+                <div className="flex flex-col items-center justify-center align-center py-24 text-center">
+                    <h2 className="text-3xl font-bold">No anime found</h2>
+
+                    <p className="mt-3 text-zinc-400">
+                        Try another title or check your spelling.
+                    </p>
+                </div>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-10">
                 {results.map((anime) => (
                     <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id} className="w-full">
@@ -70,7 +79,7 @@ export default async function AnimePage({ searchParams }) {
                 ))}
 
             </div>
-           
+
         </main>
     );
 }

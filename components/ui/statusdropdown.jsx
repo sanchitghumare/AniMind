@@ -25,7 +25,7 @@ export default function StatusDropdown({ currentStatus,animeId }) {
     }
     return (
         <select value={currentStatus} onChange={updateStatus} className="bg-zinc-800 text-zinc-400 border border-zinc-600 rounded-lg  p-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
-            <option value="watchlist">Plan to Watch</option>
+            <option value="plan_to_watch">Plan to Watch</option>
             <option value="watching">Watching</option>
             <option value="completed">Completed</option>
             <option value="dropped">Dropped</option>

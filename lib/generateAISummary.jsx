@@ -91,7 +91,7 @@ export default async function generateAISummary(userId) {
           result.recommendationDirections,
       },
       {
-        new: true,
+        returnDocument: "after",
       }
     );
     return result;

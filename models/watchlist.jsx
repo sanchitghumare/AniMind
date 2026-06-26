@@ -15,13 +15,12 @@ const WatchlistSchema = new mongoose.Schema({
   title: { type: String, required: true },
 
   image: { type: String, required: true },
-  score: { type: Number, required: true },
   rating: { type: Number, required: true },
   episodes: { type: Number, required: true },
   status: {
     type: String,
-    default: "watchlist",
-    enum: ["watchlist", "watching", "completed", "dropped"]
+    default: "plan_to_watch",
+    enum: ["plan_to_watch", "watching", "completed", "dropped"]
   },
   userRating: {
   type: Number,
