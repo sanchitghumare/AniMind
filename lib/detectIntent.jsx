@@ -52,9 +52,7 @@ export default function detectIntent(message) {
     if (/top genre/.test(text)) scores.profile += 3;
     if (/anime taste/.test(text)) scores.profile += 3;
     if (/why did you recommend/.test(text)) scores.profile += 4;
-    if (/favorite anime/.test(text)) scores.profile += 4;
     if (/what do i like/.test(text)) scores.profile += 4;
-    if (/my favourites/.test(text)) scores.profile += 3;
     if (/my preferences/.test(text)) scores.profile += 3;
 
     // Greetings / General chat

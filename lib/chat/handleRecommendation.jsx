@@ -1,6 +1,13 @@
 import searchSimilarAnime from "@/lib/embeddings/searchSimilarAnime";
 import extractAnime from "@/lib/Anime/extractAnime";
+import retrieveMemories from "@/lib/memory/retrieveMemories";
 export default async function handleRecommendation(message) {
+  const memories = await retrieveMemories(userId, message);
+  const memoryContext =
+    memories.length > 0
+      ? memories.map(m => `- ${m.memory}`).join("\n")
+      : "No relevant memories.";
+
   const anime = await extractAnime(message);
   if (anime) {
     await searchSimilarAnime(anime, 5);
@@ -33,6 +40,12 @@ export default async function handleRecommendation(message) {
       You are AniMind, an intelligent anime recommendation assistant.
 
       The following anime were retrieved by the semantic search engine as the most relevant matches for the user's request.
+
+      =========================
+      LONG TERM MEMORY
+      =========================
+
+      ${memoryContext}
 
       =========================
       RETRIEVED ANIME

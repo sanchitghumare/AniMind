@@ -3,8 +3,15 @@ import Recommendation from "@/models/Recommendation";
 import Watchlist from "@/models/watchlist";
 import ConnectDb from "@/lib/mongodb";
 import Chat from "@/models/chat";
+import retrieveMemories from "@/lib/memory/retrieveMemories";
 export default async function handleGeneralChat(userId, message) {
     await ConnectDb();
+    const memories = await retrieveMemories(userId, message);
+
+    const memoryContext =
+        memories.length > 0
+            ? memories.map(m => `- ${m.memory}`).join("\n")
+            : "No relevant memories.";
     const tasteProfile = await TasteProfile.findOne({ userId });
     if (!tasteProfile) {
         return "I don't know your anime taste yet. Rate a few anime first!";
@@ -71,6 +78,11 @@ export default async function handleGeneralChat(userId, message) {
         Already Watched Anime:
         ${JSON.stringify(watchlist || [])}
 
+        =========================
+        LONG TERM MEMORY
+        =========================
+
+        ${memoryContext}
         =========================
          CONVERSATION HISTORY
         =========================

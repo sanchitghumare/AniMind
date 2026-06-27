@@ -8,6 +8,7 @@ import handleSearch from "./chat/handleSearch";
 import handleRecommendation from "./chat/handleRecommendation";
 import handleGeneralChat from "./chat/handleGeneralChat";
 import isActionRequest from "./Agents/isActionRequest";
+import saveMemory from "./memory/saveMemory";
 export default async function generateChatResponse(message, userId) {
     await ConnectDb();
 
@@ -25,20 +26,30 @@ export default async function generateChatResponse(message, userId) {
     }
     const intent = detectIntent(message);
 
+    let response;
+
     switch (intent) {
         case "watchlist":
-            return await handleWatchlist(userId, message);
+            response = await handleWatchlist(userId, message);
+            break;
 
         case "profile":
-            return await handleProfile(userId);
+            response = await handleProfile(userId);
+            break;
 
         case "search":
-            return await handleSearch(message);
+            response = await handleSearch(message);
+            break;
 
         case "recommend":
-            return await handleRecommendation(userId, message);
+            response = await handleRecommendation(userId, message);
+            break;
 
         default:
-            return await handleGeneralChat(userId, message);
+            response = await handleGeneralChat(userId, message);
     }
+
+    await saveMemory(userId, message);
+
+    return response;
 }
