@@ -1,6 +1,8 @@
 import ConnectDb from "@/lib/mongodb";
 import Watchlist from "@/models/watchlist";
+import Anime from "@/models/Anime";
 import { searchAnime, getAnime } from "@/lib/jikan";
+import findAnime from "@/lib/Anime/findAnime";
 export default async function addToWatchlist(
     userId,
     animeTitle,
@@ -8,7 +10,11 @@ export default async function addToWatchlist(
 ) {
     await ConnectDb();
     try {
-        const searchResults = await searchAnime(animeTitle);
+        const localAnime = await findAnime(animeTitle);
+
+        const searchResults = localAnime
+            ? [localAnime]
+            : await searchAnime(animeTitle);
 
         if (!searchResults || searchResults.length === 0) {
             return {

@@ -2,7 +2,8 @@ import Recommendation from "@/models/Recommendation";
 import TasteProfile from "@/models/TasteProfile";
 import Watchlist from "@/models/watchlist";
 import { getRecommendations } from "@/lib/jikan";
-
+import Anime from "@/models/Anime";
+import searchSimilarAnime from "@/lib/embeddings/searchSimilarAnime";
 const generateRecommendation = async (userId) => {
   try {
     const tasteProfile = await TasteProfile.findOne({ userId });
@@ -20,17 +21,25 @@ const generateRecommendation = async (userId) => {
     if (favoriteAnime.length === 0) {
       throw new Error("Not enough rated anime.");
     }
-    let candidates = [];
 
-    for (const anime of favoriteAnime) {
-      const recs = await getRecommendations(anime.animeId);
+    const combinedQuery = `
+      Favorite Genres:
+      ${topGenres.map(g => g.name).join(", ")}
 
-      if (Array.isArray(recs)) {
-        candidates.push(...recs);
-      }
-    }
+      Favorite Themes:
+      ${topThemes.map(t => t.name).join(", ")}
 
-  
+      Favorite Anime:
+      ${favoriteAnime
+        .map(
+          anime => `
+      Title: ${anime.title}
+      User Rating: ${anime.userRating}/10`
+        )
+        .join("\n")}
+      `;
+
+    let candidates = await searchSimilarAnime(combinedQuery, 30);
     const watchlist = await Watchlist.find({ userId }).select("animeId");
 
     const watchedIds = new Set(
@@ -38,28 +47,28 @@ const generateRecommendation = async (userId) => {
     );
 
     candidates = candidates.filter(
-      (anime) => !watchedIds.has(Number(anime.entry.mal_id))
+      (anime) => !watchedIds.has(Number(anime.animeId))
     );
+    const unique = new Map();
+    for (const anime of candidates) {
+      const existing = unique.get(anime.animeId);
 
-   
-    candidates = [
-      ...new Map(
-        candidates.map((anime) => [anime.entry.mal_id, anime])
-      ).values(),
-    ];
+      if (!existing || anime.score > existing.score) {
+        unique.set(anime.animeId, anime);
+      }
+    }
+    candidates = [...unique.values()];
 
-   
-
-    candidates.sort((a, b) => b.votes - a.votes);
-
-
+    candidates.sort((a, b) => b.score - a.score);
     const topCandidates = candidates
       .slice(0, 20)
       .map((anime) => ({
-        animeId: anime.entry.mal_id,
-        title: anime.entry.title,
-        image: anime.entry.images?.jpg?.image_url || "",
-        votes: anime.votes,
+        animeId: anime.animeId,
+        title: anime.title,
+        image: anime.image,
+        synopsis: anime.synopsis,
+        genres: anime.genres,
+        similarityScore: anime.score,
       }));
 
     /* ------------------------------
@@ -89,7 +98,7 @@ const generateRecommendation = async (userId) => {
       - Never recommend anime from Favorite Anime.
       - Never invent anime.
       - Every animeId MUST exactly match one candidate anime.
-      - Return ONLY the best 10 recommendations.
+      - Return ONLY EXACTLY the best 10 recommendations.
 
       Return ONLY JSON.
 
@@ -118,13 +127,12 @@ const generateRecommendation = async (userId) => {
         format: "json",
       }),
     });
-
     if (!response.ok) {
       throw new Error(`Ollama Error ${response.status}`);
     }
 
     const data = await response.json();
-
+ 
     if (!data.response) {
       throw new Error("No response from Ollama");
     }
@@ -132,7 +140,7 @@ const generateRecommendation = async (userId) => {
     const result = JSON.parse(
       data.response.replace(/```json/g, "").replace(/```/g, "").trim()
     );
-
+    
     const validIds = new Set(
       topCandidates.map((anime) => Number(anime.animeId))
     );
@@ -160,7 +168,7 @@ const generateRecommendation = async (userId) => {
           reason: rec.reason,
         };
       });
-
+  
     await Recommendation.findOneAndUpdate(
       { userId },
       {

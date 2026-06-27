@@ -75,3 +75,16 @@ export async function getRecommendations(id) {
     return [];
   }
 }
+export async function getTopAnime(page = 1) {
+  const res = await fetch(
+    `https://api.jikan.moe/v4/top/anime?page=${page}&limit=25`
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+
+  return data.data;
+}

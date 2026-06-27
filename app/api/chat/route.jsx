@@ -34,6 +34,7 @@ export async function POST(request) {
               content: response,
             },
           ],
+          $slice: -30,
         },
       },
     },

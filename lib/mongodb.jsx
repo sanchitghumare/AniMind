@@ -23,6 +23,7 @@ return cached.conn;
 if (!cached.promise) {
 cached.promise = mongoose.connect(MONGODB_URI, {
 bufferCommands: false,
+dbName: "animind",
 });
 }
 

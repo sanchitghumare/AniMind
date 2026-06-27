@@ -1,57 +1,65 @@
-import Recommendation from "@/models/Recommendation";
-
-export default async function handleRecommendation(userId, message) {
-  const recommendationDoc = await Recommendation.findOne({ userId });
-
-  if (
-    !recommendationDoc ||
-    recommendationDoc.recommendations.length === 0
-  ) {
-    return "I don't have personalized recommendations for you yet. Rate a few anime first!";
+import searchSimilarAnime from "@/lib/embeddings/searchSimilarAnime";
+import extractAnime from "@/lib/Anime/extractAnime";
+export default async function handleRecommendation(message) {
+  const anime = await extractAnime(message);
+  if (anime) {
+    await searchSimilarAnime(anime, 5);
+  } else {
+    const anime = await searchSimilarAnime(message, 5);
   }
 
-  const recommendations = recommendationDoc.recommendations.slice(0, 10);
+  if (!anime.length) {
+    return "I couldn't find any suitable anime in my database for your request.";
+  }
+
+  const animeContext = anime
+    .map(
+      (a) => `
+      Title: ${a.title}
+
+      Synopsis:
+      ${a.synopsis || "No synopsis available."}
+
+      Genres:
+      ${a.genres?.map((g) => g.name).join(", ") || "Unknown"}
+
+      Similarity Score:
+      ${a.score.toFixed(3)}
+      `
+    )
+    .join("\n-----------------------------\n");
 
   const prompt = `
-You are AniMind, a personalized anime recommendation assistant.
+      You are AniMind, an intelligent anime recommendation assistant.
 
-The following anime have already been selected by AniMind's recommendation engine for this user.
+      The following anime were retrieved by the semantic search engine as the most relevant matches for the user's request.
 
-=========================
-PERSONALIZED RECOMMENDATIONS
-=========================
+      =========================
+      RETRIEVED ANIME
+      =========================
 
-${recommendations
-  .map(
-    (anime) => `
-Title: ${anime.title}
-Compatibility: ${anime.compatibilityScore}%
-Reason: ${anime.reason}
-`
-  )
-  .join("\n")}
+      ${animeContext}
 
-=========================
-USER REQUEST
-=========================
+      =========================
+      USER REQUEST
+      =========================
 
-${message}
+      ${message}
 
-=========================
-RULES
-=========================
+      =========================
+      RULES
+      =========================
 
-- Recommend ONLY anime from the personalized recommendation list.
-- Never invent anime.
-- Never recommend anime outside this list.
-- Choose the best 2-3 anime that satisfy the user's request.
-- Explain why each recommendation matches the request.
-- If none of the recommendations fit well, say so honestly.
-- Keep the response under 150 words.
-- Respond naturally like a helpful assistant.
+      - Recommend ONLY anime from the retrieved list above.
+      - Never invent anime titles.
+      - Choose the best 3-5 recommendations.
+      - Briefly explain why each recommendation matches the user's request.
+      - If none of the retrieved anime are suitable, say so honestly.
+      - Keep the response under 200 words.
+      - Respond naturally like a helpful anime expert.
 
-Return only the assistant response.
-`;
+      Return only the assistant response.
+      `;
 
   const response = await fetch("http://localhost:11434/api/generate", {
     method: "POST",
@@ -66,10 +74,16 @@ Return only the assistant response.
   });
 
   if (!response.ok) {
-    throw new Error("Failed to generate recommendation response.");
+    const errorText = await response.text();
+    console.error("Ollama Error:", errorText);
+    throw new Error(`Ollama API request failed: ${errorText}`);
   }
 
-  const data = await response.json();
+  const result = await response.json();
 
-  return data.response.trim();
+  if (!result.response) {
+    throw new Error("No response from Ollama.");
+  }
+
+  return result.response.trim();
 }
