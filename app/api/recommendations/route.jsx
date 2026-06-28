@@ -19,12 +19,8 @@ export async function GET() {
         { status: 401 }
       );
     }
-    const identifier =
-      session?.user?.id ??
-      request.headers.get("x-forwarded-for") ??
-      "anonymous";
     const { success } =
-      await recommendationRateLimit.limit(identifier);
+      await recommendationRateLimit.limit(session.user.id);
 
     if (!success) {
       return NextResponse.json(

@@ -15,7 +15,7 @@ export default function WatchlistButton({ anime }) {
                     score: anime.score,
                     rating: anime.score,
                     episodes: anime.episodes,
-                    status: "watchlist"
+                    status: "plan_to_watch",
                 }),
             });
             const data = await response.json();
