@@ -6,7 +6,7 @@ import ConnectDb from "@/lib/mongodb";
 
 import Recommendation from "@/models/Recommendation";
 import TasteProfile from "@/models/TasteProfile";
-
+import { recommendationRateLimit } from "@/lib/ratelimit";
 import generateRecommendation from "@/lib/generateRecommendation";
 
 export async function GET() {
@@ -19,7 +19,24 @@ export async function GET() {
         { status: 401 }
       );
     }
+    const identifier =
+      session?.user?.id ??
+      request.headers.get("x-forwarded-for") ??
+      "anonymous";
+    const { success } =
+      await recommendationRateLimit.limit(identifier);
 
+    if (!success) {
+      return NextResponse.json(
+        {
+          error:
+            "You've requested recommendations too many times. Please wait a minute before trying again.",
+        },
+        {
+          status: 429,
+        }
+      );
+    }
     await ConnectDb();
 
     const tasteProfile = await TasteProfile.findOne({

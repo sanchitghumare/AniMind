@@ -70,6 +70,22 @@ export default function ChatPage() {
         }),
       });
       const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 429) {
+          setMessages((prev) => [
+            ...prev,
+            {
+               id: crypto.randomUUID(),
+              role: "assistant",
+              content:
+                "You're sending messages too quickly. Please wait a minute and try again.",
+            },
+          ]);
+          return;
+        }
+
+        throw new Error(data.error || "Something went wrong.");
+      }
       setLoading(false);
       setMessages((prev) => [
         ...prev,

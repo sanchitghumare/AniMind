@@ -12,6 +12,9 @@ export default function RecommendationSection() {
         async function fetchRecommendations() {
             const res = await fetch("/api/recommendations");
             const data = await res.json();
+            if(res.status===429){
+                throw new Error("Too many requests. Please wait a minute before trying again.");
+            }
             if (!res.ok) {
                 setRecommendations([]);
                 return;

@@ -20,6 +20,14 @@ export default async function ProfilePage() {
     }
     await ConnectDb();
     const user = await User.findOne({ email: session.user.email });
+    if(!user) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen py-2">
+                <h1 className="text-4xl font-bold mb-4">User not found</h1>
+                <p className="text-lg">Please log in to view your profile.</p>
+            </div>
+        );
+    }
     const userData = {
         id: user._id.toString(),
         username: user.username,
@@ -29,6 +37,14 @@ export default async function ProfilePage() {
     const len = await Watchlist.countDocuments({ userId: user._id });
     const recentlyAdded = await Watchlist.find({ userId: user._id }).sort({ createdAt: -1 }).limit(5);
     const tasteProfile = await TasteProfile.findOne({ userId: user._id }).sort({ updatedAt: -1 }).limit(3);
+    if(!tasteProfile) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen py-2">
+                <h1 className="text-4xl font-bold mb-4">Taste Profile not found</h1>
+                <p className="text-lg">Please rate some anime to generate your taste profile.</p>
+            </div>
+        );
+    }
     return (
         <div className="min-h-screen bg-black text-white px-10 py-8">
             <div className="grid lg:grid-cols-[350px_1fr] gap-8">
@@ -87,7 +103,7 @@ export default async function ProfilePage() {
                     </div>
 
                     {/* AI Persona */}
-                    <div className="bg-gradient-to-r from-indigo-900 to-gray-900 rounded-xl p-6">
+                    <div className="bg-linear-to-r from-indigo-900 to-gray-900 rounded-xl p-6">
                         <h2 className="text-2xl font-bold mb-2">
                             🎭 Your Anime Persona
                         </h2>

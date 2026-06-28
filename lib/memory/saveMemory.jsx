@@ -16,7 +16,7 @@ export default async function saveMemory(userId, message) {
   for (const memory of memories) {
     const existing = await Memory.findOne({
       userId,
-      memory: memory.memory,
+      memory: memory.memory,  
     });
 
     if (existing) {

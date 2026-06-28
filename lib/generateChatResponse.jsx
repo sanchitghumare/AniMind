@@ -49,7 +49,11 @@ export default async function generateChatResponse(message, userId) {
             response = await handleGeneralChat(userId, message);
     }
 
-    await saveMemory(userId, message);
+    try {
+        await saveMemory(userId, message);
+    } catch (err) {
+        console.error("Memory save failed:", err);
+    }
 
     return response;
 }

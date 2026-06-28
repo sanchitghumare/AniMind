@@ -16,9 +16,9 @@ export default async function retrieveMemories(userId, query, limit=5) {
         query,
         limit,
         numCandidates: 50,
-        // filter: {
-        //   userId: new mongoose.Types.ObjectId(userId),
-        // },
+        filter: {
+          userId: new mongoose.Types.ObjectId(userId),
+        },
       },
     },
     {

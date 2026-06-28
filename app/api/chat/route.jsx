@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import generateChatResponse from "@/lib/generateChatResponse";
 import ConnectDb from "@/lib/mongodb";
 import Chat from "@/models/chat";
+import { chatRateLimit } from "@/lib/ratelimit";
 export async function POST(request) {
   const { message } = await request.json();
   const session = await getServerSession(authOptions);
@@ -16,7 +17,25 @@ export async function POST(request) {
     );
   }
   const userId = session.user.id;
-
+  const identifier =
+    session?.user?.id ??
+    request.headers.get("x-forwarded-for") ??
+    "anonymous";
+  const { success } = await chatRateLimit.limit(identifier);
+  console.log({
+    identifier,
+    success,
+  });
+  if (!success) {
+    return NextResponse.json(
+      {
+        error: "Too many requests. Please wait a minute before trying again.",
+      },
+      {
+        status: 429,
+      }
+    );
+  }
   const response = await generateChatResponse(message, userId);
   await ConnectDb();
   await Chat.findOneAndUpdate(

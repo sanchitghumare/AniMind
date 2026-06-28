@@ -28,7 +28,7 @@ export async function POST(request) {
             score,
             rating,
             episodes,
-            status: status || "watchlist",
+            status: status || "plan_to_watch",
             userRating: userRating || null
         });
         return NextResponse.json({ message: "Anime added to watchlist" }, { status: 201 });

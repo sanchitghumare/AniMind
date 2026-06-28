@@ -1,18 +1,18 @@
 import searchSimilarAnime from "@/lib/embeddings/searchSimilarAnime";
 import extractAnime from "@/lib/Anime/extractAnime";
 import retrieveMemories from "@/lib/memory/retrieveMemories";
-export default async function handleRecommendation(message) {
+export default async function handleRecommendation(userId,message) {
   const memories = await retrieveMemories(userId, message);
   const memoryContext =
     memories.length > 0
       ? memories.map(m => `- ${m.memory}`).join("\n")
       : "No relevant memories.";
-
-  const anime = await extractAnime(message);
-  if (anime) {
-    await searchSimilarAnime(anime, 5);
+  let anime = [];
+  const extractedAnime = await extractAnime(message);
+  if (extractedAnime) {
+     anime=await searchSimilarAnime(extractedAnime, 5);
   } else {
-    const anime = await searchSimilarAnime(message, 5);
+     anime = await searchSimilarAnime(message, 5);
   }
 
   if (!anime.length) {

@@ -16,8 +16,8 @@ export default async function handleGeneralChat(userId, message) {
     if (!tasteProfile) {
         return "I don't know your anime taste yet. Rate a few anime first!";
     }
-    const recommendations = await Recommendation.findOne({ userId })
-    if (recommendations.length === 0) {
+    const recommendations = await Recommendation.findOne({ userId });
+    if (!recommendations || recommendations.length === 0) {
         return "I don't have any recommendations for you yet. Rate a few anime first!";
     }
     const { topGenres, topThemes, topRatedAnime } = tasteProfile;
