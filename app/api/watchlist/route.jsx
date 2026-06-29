@@ -15,7 +15,6 @@ export async function POST(request) {
         const body = await request.json();
 
         const parsed = createWatchlistSchema.safeParse(body);
-
         if (!parsed.success) {
             return NextResponse.json(
                 {

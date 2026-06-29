@@ -57,7 +57,7 @@ export default async function addToWatchlist(
       genres: anime.genres,
       themes: anime.themes,
       episodes: anime.episodes,
-      rating: anime.rating ?? anime.score,
+      rating:  anime.score,
     });
 
     return {

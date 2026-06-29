@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const WatchlistSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: String, 
     required: true,
   },
 
@@ -30,6 +30,16 @@ const WatchlistSchema = new mongoose.Schema({
 }
 
 }, { timestamps: true });
+WatchlistSchema.index(
+  { userId: 1, animeId: 1 },
+  { unique: true }
+);
+
+// Speed up filtering by status
+WatchlistSchema.index({
+  userId: 1,
+  status: 1,
+});
 
 export default mongoose.models.Watchlist ||
 mongoose.model("Watchlist", WatchlistSchema);

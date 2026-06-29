@@ -1,5 +1,7 @@
 "use client";
 import {toast} from "sonner";
+import { Bookmark } from "lucide-react";
+
 export default function WatchlistButton({ anime }) {
     async function handleAddToWatchlist() {
         try {
@@ -34,10 +36,11 @@ export default function WatchlistButton({ anime }) {
     
     return (
         <button 
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600 transition-all" 
+            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-3 rounded-lg mt-4 hover:bg-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-lg hover:shadow-blue-500/20" 
             onClick={handleAddToWatchlist}
         >
-            + Add to Watchlist
+            <Bookmark size={18} />
+            Add to Watchlist
         </button>
         
     );

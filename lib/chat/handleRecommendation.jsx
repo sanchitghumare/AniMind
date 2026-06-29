@@ -77,6 +77,7 @@ export default async function handleRecommendation(userId,message) {
 
   const response = await generateLLMResponse({
     prompt,
+    label: "Recommendation Chat",
   });
  
   const result = await response.json();

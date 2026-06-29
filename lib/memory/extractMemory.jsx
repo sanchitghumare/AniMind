@@ -1,80 +1,131 @@
 import { generateLLMResponse } from "@/lib/llm";
 export default async function extractMemory(message) {
   const prompt = `
-You are AniMind's long-term memory manager.
+    You are AniMind's long-term memory extractor.
 
-Your job is to decide whether the user's latest message contains information worth remembering for future conversations.
+Extract ONLY persistent information about the user that would be useful in future conversations.
 
-Remember ONLY durable information such as:
-
-- Favourite anime
-- Favourite genres
-- Favourite themes
-- Favourite studios
-- Likes
-- Dislikes
-- Long-term goals
-- Stable preferences
-- Personal facts that help future recommendations
-  (for example: name, occupation, education, hobbies, preferred language)
-
-Do NOT remember:
-
+Do NOT extract:
 - Greetings
-- Small talk
 - Temporary requests
 - Questions
-- One-time actions
-- Information already obvious from context
+- Anime search queries
+- Commands like "add Naruto to my watchlist"
+- Casual conversation
+- Information that is unlikely to matter later
 
-Each memory should be a complete, standalone sentence that still makes sense weeks later.
+For each memory return:
 
-Good:
-- "The user's favorite anime is Monster."
-- "The user prefers psychological thriller anime."
+- memory
+- category
+- subject
+- importance
 
-Bad:
-- "Likes Monster."
-- "Psychological."
-- "Favorite studio."
+Definitions:
+
+memory
+A concise fact to remember.
+
+category
+One of:
+- preference
+- favorite
+- goal
+- fact
+- dislike
+
+subject
+A stable identifier describing what this memory is about.
+
+Examples:
+- name
+- favorite_genre
+- favorite_anime
+- favorite_character
+- favorite_studio
+- favorite_director
+- preferred_length
+- dislikes_horror
+- goal
+- occupation
+
+If a new memory has the same subject as an older memory,
+it should REPLACE the old one.
+
+importance
+Integer from 1 to 10.
+
+Examples
+
+User:
+My name is Sanchit.
+
+{
+  "memories": [
+    {
+      "memory": "User's name is Sanchit.",
+      "category": "fact",
+      "subject": "name",
+      "importance": 10
+    }
+  ]
+}
+
+User:
+My favorite genre is Action.
+
+{
+  "memories": [
+    {
+      "memory": "User's favorite genre is Action.",
+      "category": "favorite",
+      "subject": "favorite_genre",
+      "importance": 8
+    }
+  ]
+}
+
+User:
+Actually I like Psychological more than Action.
+
+{
+  "memories": [
+    {
+      "memory": "User's favorite genre is Psychological.",
+      "category": "favorite",
+      "subject": "favorite_genre",
+      "importance": 9
+    }
+  ]
+}
+
+User:
+Hello!
+
+{
+  "memories": []
+}
+
 Return ONLY valid JSON.
-
-Schema:
 
 {
   "memories": [
     {
       "memory": "...",
-      "category": "preference",
-      "importance": 0.9
+      "category": "...",
+      "subject": "...",
+      "importance": 7
     }
   ]
 }
-
-Allowed categories:
-
-- preference
-- dislike
-- favorite
-- goal
-- fact
-Never use any other category.
-If none fit, use "preference".
-
-If nothing should be remembered, return:
-
-{
-  "memories":[]
-}
-
-User message:
-
-${message}
+  User message:
+    ${message}
 `;
 
   const response = await generateLLMResponse({
     prompt,
-    format: "json"
+    format: "json",
+    label: "Memory Extraction",
   });
   let result;
 

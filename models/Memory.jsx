@@ -6,17 +6,18 @@ const memorySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
     memory: {
       type: String,
       required: true,
+      trim: true,
     },
 
     embeddingText: {
       type: String,
       required: true,
+      trim: true,
     },
 
     category: {
@@ -34,14 +35,25 @@ const memorySchema = new mongoose.Schema(
 
     importance: {
       type: Number,
-      default: 0.5,
-      min: 0,
-      max: 1,
+      min: 1,
+      max: 10,
+      required: true,
+    },
+
+    subject: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
     },
   },
   {
     timestamps: true,
   }
+);
+memorySchema.index(
+  { userId: 1, subject: 1 },
+  { unique: true }
 );
 
 export default mongoose.models.Memory ||

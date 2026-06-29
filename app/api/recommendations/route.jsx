@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-
 import ConnectDb from "@/lib/mongodb";
-
 import Recommendation from "@/models/Recommendation";
 import TasteProfile from "@/models/TasteProfile";
-import { recommendationRateLimit } from "@/lib/ratelimit";
-import generateRecommendation from "@/lib/generateRecommendation";
+import { generateRecommendationsWithLimit } from "@/lib/generaterecommendationlimit";
 
 export async function GET() {
   try {
@@ -19,20 +16,7 @@ export async function GET() {
         { status: 401 }
       );
     }
-    const { success } =
-      await recommendationRateLimit.limit(session.user.id);
 
-    if (!success) {
-      return NextResponse.json(
-        {
-          error:
-            "You've requested recommendations too many times. Please wait a minute before trying again.",
-        },
-        {
-          status: 429,
-        }
-      );
-    }
     await ConnectDb();
 
     const tasteProfile = await TasteProfile.findOne({
@@ -68,12 +52,22 @@ export async function GET() {
 
     if (shouldRegenerate) {
       console.log("Generating recommendations...");
-
-      await generateRecommendation(session.user.id);
-
-      recommendation = await Recommendation.findOne({
-        userId: session.user.id,
-      });
+      try {
+        await generateRecommendationsWithLimit(session.user.id);
+        recommendation = await Recommendation.findOne({
+          userId: session.user.id,
+        });
+      } catch (error) {
+        console.error("Error generating recommendations:", error);
+        return NextResponse.json(
+          {
+            error: error.message || "Failed to generate recommendations",
+          },
+          {
+            status: 429,
+          }
+        );
+      }
     }
 
     return NextResponse.json(

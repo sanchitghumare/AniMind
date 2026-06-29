@@ -1,28 +1,39 @@
 export async function generateLLMResponse({
   prompt,
-  model = process.env.OLLAMA_MODEL ,
+  model = process.env.GROQ_MODEL,
   format,
   temperature,
+  label = 'LLM Response',
 }) {
   const controller = new AbortController();
 
-  const timeout = setTimeout(() => controller.abort(), 30000);
+  const timeout = setTimeout(() => controller.abort(), 60000);
 
   try {
-    const response = await fetch(process.env.OLLAMA_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        prompt,
-        stream: false,
-        ...(format && { format }),
-        ...(temperature !== undefined && { temperature }),
-      }),
-      signal: controller.signal,
-    });
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          ...(temperature !== undefined && { temperature }),
+          ...(format === "json" && {
+            response_format: { type: "json_object" },
+          }),
+        }),
+        signal: controller.signal,
+      }
+    );
 
     if (!response.ok) {
       const error = await response.text();
@@ -30,12 +41,12 @@ export async function generateLLMResponse({
     }
 
     const data = await response.json();
-
-    if (!data.response) {
+    const content = data.choices[0].message.content;
+    if (!content) {
       throw new Error("No response from LLM.");
     }
 
-    return data.response.trim();
+    return content.trim();
   } catch (error) {
     if (error.name === "AbortError") {
       throw new Error("LLM request timed out.");

@@ -27,12 +27,11 @@ export default function RemoveWatchlistButton({ animeId }) {
     } 
     return (
         <button 
-            className="bg-black text-white px-4 py-2 rounded-lg mt-4 hover:bg-red-600 transition-all" 
+            className="flex items-center justify-center p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all duration-200 border border-red-500/30 hover:border-red-500/50"
             onClick={(e) => handleRemoveFromWatchlist(animeId, e)}
-           
+            title="Remove from watchlist"
         >
-            <BookmarkMinus className="text-white" size={16} />
-             
+            <BookmarkMinus size={16} />
         </button>
     );
 }

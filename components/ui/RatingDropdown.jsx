@@ -40,7 +40,7 @@ export default function RatingDropdown({
     <select
       value={currentRating || ""}
       onChange={updateRating}
-      className="bg-zinc-800 text-zinc-400 border border-zinc-600 rounded p-1"
+      className="bg-zinc-800 text-white border border-zinc-700 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 hover:border-zinc-600 cursor-pointer"
     > 
      
       <option value="">Rate</option>

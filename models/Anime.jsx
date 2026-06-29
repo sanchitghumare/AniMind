@@ -58,6 +58,7 @@ const animeSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+animeSchema.index({ animeId: 1 }, { unique: true });
 
 export default mongoose.models.Anime ||
   mongoose.model("Anime", animeSchema);

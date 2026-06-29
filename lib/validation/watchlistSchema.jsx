@@ -5,7 +5,7 @@ export const createWatchlistSchema = z.object({
   title: z.string().trim().min(1).max(200),
   image: z.string().url(),
   score: z.number().min(0).max(10).nullable().optional(),
-  rating: z.string().optional(),
+  rating: z.number().nullable().optional(),
   episodes: z.number().int().nonnegative().optional(),
   status: z.enum([
     "watching",

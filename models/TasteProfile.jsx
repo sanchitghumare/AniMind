@@ -32,9 +32,5 @@ const TasteProfileSchema = new mongoose.Schema({
   aiSummary: String,
   recommendationDirections: [String],
   lastGenerated: Date,
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+},{timestamps: true,});
 export default mongoose.models.TasteProfile || mongoose.model("TasteProfile", TasteProfileSchema);

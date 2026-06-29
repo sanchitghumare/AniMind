@@ -11,7 +11,8 @@ export default function StatusFilter() {
       value={searchParams.get("status") || "all"}
       onChange={(e) => {
         router.push(`/watchlist?status=${e.target.value}`);
-      }} className="bg-zinc-800 text-zinc-400 border border-zinc-600 rounded-lg  p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+      }}
+      className="bg-zinc-800 text-white border border-zinc-700 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 hover:border-zinc-600 cursor-pointer"
     >
       <option value="all">All</option>
       <option value="plan_to_watch">Plan to Watch</option>

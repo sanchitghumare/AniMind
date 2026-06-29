@@ -48,7 +48,8 @@ export default async function generateAISummary(userId) {
 
     const response = await generateLLMResponse({
       prompt,
-      format: "json"
+      format: "json",
+      label: "AI Summary Generation",
     });
             
     const result = await response.json();

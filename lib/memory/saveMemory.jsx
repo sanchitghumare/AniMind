@@ -6,29 +6,48 @@ export default async function saveMemory(userId, message) {
   await ConnectDb();
 
   const memories = await extractMemory(message);
-
   if (!memories.length) {
     return [];
   }
 
   const saved = [];
+  const VALID_CATEGORIES = [
+    "preference",
+    "favorite",
+    "goal",
+    "fact",
+    "dislike",
+  ];
+  const validMemories = memories.filter(
+    (m) =>
+      m.memory?.trim() &&
+      VALID_CATEGORIES.includes(m.category) &&
+      Number.isFinite(m.importance)&&
+      m.subject?.trim()
+  );
 
-  for (const memory of memories) {
+  for (const memory of validMemories) {
     const existing = await Memory.findOne({
       userId,
-      memory: memory.memory,  
+      subject: memory.subject,
     });
-
+    const importance = Math.max(
+      1,
+      Math.min(10, Number(memory.importance))
+    );
     if (existing) {
       existing.importance = Math.max(
         existing.importance,
-        memory.importance
+        importance
       );
-
+      existing.memory = memory.memory;
+      existing.embeddingText = memory.memory;
+      existing.category = memory.category;
+      existing.importance = Math.max(existing.importance, memory.importance);
+      existing.subject = memory.subject;
       existing.updatedAt = new Date();
 
       await existing.save();
-
       saved.push(existing);
 
       continue;
@@ -39,7 +58,8 @@ export default async function saveMemory(userId, message) {
       memory: memory.memory,
       embeddingText: memory.memory,
       category: memory.category,
-      importance: memory.importance,
+      importance,
+      subject: memory.subject,
     });
     saved.push(created);
   }

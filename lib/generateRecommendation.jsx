@@ -6,6 +6,7 @@ import Anime from "@/models/Anime";
 import searchSimilarAnime from "@/lib/embeddings/searchSimilarAnime";
 import { generateLLMResponse } from "@/lib/llm";
 const generateRecommendation = async (userId) => {
+  
   try {
     const tasteProfile = await TasteProfile.findOne({ userId });
 
@@ -118,7 +119,8 @@ const generateRecommendation = async (userId) => {
 
     const response = await generateLLMResponse({
       prompt,
-      format: "json"
+      format: "json",
+      label: "Recommendation Generation",
     });
   
     const result = await response.json();

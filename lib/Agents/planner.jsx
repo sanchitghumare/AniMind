@@ -1,55 +1,106 @@
-// planner.js
 import { generateLLMResponse } from "@/lib/llm";
 export default async function planner(message) {
   const prompt = `
-You are an AI planner for AniMind.
+      You are AniMind's routing planner.
 
-You have only these Available tools:
+    Return ONLY valid JSON.
 
-1. addToWatchlist(animeTitle)
-2. removeFromWatchlist(animeTitle)
-3. updateWatchlistStatus(animeTitle, status)
-4. rateAnime(animeTitle, rating)
+    Determine:
 
-If one tool should be used, return ONLY valid JSON.
+    1. intent
+    2. tool
+    3. shouldSaveMemory
 
-Example:
+    Intents:
+    - chat
+    - search
+    - recommend
+    - watchlist
+    - profile
 
-{
-  "tool": "addToWatchlist",
-  "arguments": {
-    "animeTitle": "Naruto"
-  }
-}
+    Tools:
+    - addToWatchlist(animeTitle)
+    - removeFromWatchlist(animeTitle)
+    - updateWatchlistStatus(animeTitle,status)
+    - rateAnime(animeTitle,rating)
+    if no tool is needed, return "none".
 
-Another example:
+    Rules
 
-{
-  "tool": "rateAnime",
-  "arguments": {
-    "animeTitle": "Monster",
-    "rating": 10
-  }
-}
+    • Questions about anime → search
+    • Recommendation requests → recommend
+    • Questions about the user's preferences, memories or previous conversations → chat
+    • Watchlist modifications → corresponding tool + watchlist
+    • Profile/taste analysis → profile
+    
+    When extracting animeTitle:
 
-If none of these tools can satisfy the user's request, return
+    - Copy the anime title exactly as written by the user.
+    - Do NOT expand abbreviations.
+    - Do NOT guess a more specific title.
+    - Do NOT replace it with a movie, sequel, OVA, or related work.
+    - Do NOT normalize or autocomplete titles.
+    - Preserve the user's wording exactly.
 
-{
-  "tool": "none",
-  "arguments": {}
-}
-Never invent tool names.
-Never output any tool except the four listed above or "none".
+    Example:
 
-User message:
+    User: Add Naruto
+    animeTitle = "Naruto"
 
-${message}
-`;
+    User: Add AOT
+    animeTitle = "AOT"
+
+    User: Add FMAB
+    animeTitle = "FMAB"
+
+    shouldSaveMemory=true ONLY if the user provides new long-term information such as:
+    - name
+    - preference
+    - favorite
+    - dislike
+    - goal
+    - long-term interest
+    - stable personal fact
+
+    Otherwise false.
+
+    Return
+
+    {
+    "tool":"",
+    "intent":"",
+    "shouldSaveMemory":false,
+    "arguments":{}
+    }
+
+    User:
+
+    ${message}
+    `;
 
   const response = await generateLLMResponse({
     prompt,
-    format: "json"
+    format: "json",
+    label: "Planner",
   });
- 
-  return JSON.parse(response);
+
+  try {
+    const plan = JSON.parse(response);
+
+    return {
+      tool: plan.tool ?? "none",
+      intent: plan.intent ?? "chat",
+      shouldSaveMemory: plan.shouldSaveMemory,
+      arguments: plan.arguments ?? {},
+    };
+  } catch (error) {
+    console.error("Planner JSON error:", error);
+
+    return {
+      tool: "none",
+      intent: "chat",
+      shouldSaveMemory: false,
+      arguments: {},
+    };
+  }
 }

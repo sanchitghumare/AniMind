@@ -1,25 +1,28 @@
 import ConnectDb from "@/lib/mongodb";
 import Anime from "@/models/Anime";
-
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 export default async function findAnime(query) {
   await ConnectDb();
 
-  const anime = await Anime.findOne({
-    $or: [
-      {
-        title: {
-          $regex: query,
-          $options: "i",
-        },
-      },
-      {
-        alternateTitles: {
-          $regex: query,
-          $options: "i",
-        },
-      },
-    ],
+  const escaped = escapeRegex(query);
+
+  let anime = await Anime.findOne({
+    title: {
+      $regex: `^${escaped}$`,
+      $options: "i",
+    },
   });
 
-  return anime;
+  if (anime) return anime;
+
+  anime = await Anime.findOne({
+    alternateTitles: {
+      $regex: `^${escaped}$`,
+      $options: "i",
+    },
+  });
+
+  return anime; // null if not found
 }
