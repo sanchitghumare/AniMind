@@ -1,6 +1,7 @@
 import searchSimilarAnime from "@/lib/embeddings/searchSimilarAnime";
 import extractAnime from "@/lib/Anime/extractAnime";
 import retrieveMemories from "@/lib/memory/retrieveMemories";
+import { generateLLMResponse } from "@/lib/llm";
 export default async function handleRecommendation(userId,message) {
   const memories = await retrieveMemories(userId, message);
   const memoryContext =
@@ -74,29 +75,11 @@ export default async function handleRecommendation(userId,message) {
       Return only the assistant response.
       `;
 
-  const response = await fetch("http://localhost:11434/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "llama3.2",
-      prompt,
-      stream: false,
-    }),
+  const response = await generateLLMResponse({
+    prompt,
   });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Ollama Error:", errorText);
-    throw new Error(`Ollama API request failed: ${errorText}`);
-  }
-
+ 
   const result = await response.json();
-
-  if (!result.response) {
-    throw new Error("No response from Ollama.");
-  }
 
   return result.response.trim();
 }

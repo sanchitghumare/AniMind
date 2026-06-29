@@ -1,3 +1,4 @@
+import { generateLLMResponse } from "@/lib/llm";
 export default async function extractMemory(message) {
   const prompt = `
 You are AniMind's long-term memory manager.
@@ -57,6 +58,8 @@ Allowed categories:
 - favorite
 - goal
 - fact
+Never use any other category.
+If none fit, use "preference".
 
 If nothing should be remembered, return:
 
@@ -69,32 +72,19 @@ User message:
 ${message}
 `;
 
-  const response = await fetch("http://localhost:11434/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "llama3.2",
-      prompt,
-      stream: false,
-      format: "json",
-    }),
+  const response = await generateLLMResponse({
+    prompt,
+    format: "json"
   });
+  let result;
 
-  if (!response.ok) {
-    throw new Error("Failed to extract memories.");
+  try {
+    result = JSON.parse(
+      response.replace(/```json/g, "").replace(/```/g, "").trim()
+    );
+  } catch {
+    throw new Error("Invalid JSON returned while extracting memories.");
   }
-
-  const data = await response.json();
-
-  if (!data.response) {
-    return [];
-  }
-
-  const result = JSON.parse(
-    data.response.replace(/```json/g, "").replace(/```/g, "").trim()
-  );
-
   return result.memories ?? [];
+
 }

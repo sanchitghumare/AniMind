@@ -5,8 +5,24 @@ import generateChatResponse from "@/lib/generateChatResponse";
 import ConnectDb from "@/lib/mongodb";
 import Chat from "@/models/chat";
 import { chatRateLimit } from "@/lib/ratelimit";
+import {chatSchema} from "@/lib/validation/chatSchema";
 export async function POST(request) {
-  const { message } = await request.json();
+  const body = await request.json();
+
+  const parsed = chatSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        error: parsed.error.issues[0].message,
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  const { message } = parsed.data;
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json(
@@ -22,10 +38,6 @@ export async function POST(request) {
     request.headers.get("x-forwarded-for") ??
     "anonymous";
   const { success } = await chatRateLimit.limit(identifier);
-  console.log({
-    identifier,
-    success,
-  });
   if (!success) {
     return NextResponse.json(
       {

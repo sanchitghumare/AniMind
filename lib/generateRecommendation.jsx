@@ -4,6 +4,7 @@ import Watchlist from "@/models/watchlist";
 import { getRecommendations } from "@/lib/jikan";
 import Anime from "@/models/Anime";
 import searchSimilarAnime from "@/lib/embeddings/searchSimilarAnime";
+import { generateLLMResponse } from "@/lib/llm";
 const generateRecommendation = async (userId) => {
   try {
     const tasteProfile = await TasteProfile.findOne({ userId });
@@ -115,32 +116,12 @@ const generateRecommendation = async (userId) => {
 
 
 
-    const response = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "llama3.2",
-        prompt,
-        stream: false,
-        format: "json",
-      }),
+    const response = await generateLLMResponse({
+      prompt,
+      format: "json"
     });
-    if (!response.ok) {
-      throw new Error(`Ollama Error ${response.status}`);
-    }
-
-    const data = await response.json();
- 
-    if (!data.response) {
-      throw new Error("No response from Ollama");
-    }
-
-    const result = JSON.parse(
-      data.response.replace(/```json/g, "").replace(/```/g, "").trim()
-    );
-    
+  
+    const result = await response.json();
     const validIds = new Set(
       topCandidates.map((anime) => Number(anime.animeId))
     );

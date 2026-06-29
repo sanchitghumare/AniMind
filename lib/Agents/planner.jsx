@@ -1,5 +1,5 @@
 // planner.js
-
+import { generateLLMResponse } from "@/lib/llm";
 export default async function planner(message) {
   const prompt = `
 You are an AI planner for AniMind.
@@ -46,20 +46,10 @@ User message:
 ${message}
 `;
 
-  const response = await fetch("http://localhost:11434/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "llama3.2",
-      prompt,
-      stream: false,
-      format: "json",
-    }),
+  const response = await generateLLMResponse({
+    prompt,
+    format: "json"
   });
-
-  const data = await response.json();
-
-  return JSON.parse(data.response);
+ 
+  return JSON.parse(response);
 }

@@ -4,13 +4,38 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 import Watchlist from "@/models/watchlist";
+import { createWatchlistSchema } from "@/lib/validation/watchlistSchema";
+import { updateWatchlistSchema } from "@/lib/validation/watchlistSchema";
 export async function POST(request) {
     try {
         const session = await getServerSession(authOptions);
         if (!session) {
             return NextResponse.json({ error: "Please sign in to add to watchlist" }, { status: 401 });
         }
-        const { animeId, title, image, score, rating, episodes, status, userRating } = await request.json();
+        const body = await request.json();
+
+        const parsed = createWatchlistSchema.safeParse(body);
+
+        if (!parsed.success) {
+            return NextResponse.json(
+                {
+                    error: parsed.error.issues[0].message,
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+        const {
+            animeId,
+            title,
+            image,
+            score,
+            rating,
+            episodes,
+            status,
+            userRating,
+        } = parsed.data;
         await ConnectDb();
         const user = await User.findOne({ email: session.user.email });
         if (!user) {
@@ -66,7 +91,22 @@ export async function PATCH(request) {
         if (!session) {
             return NextResponse.json({ error: "Please sign in to update watchlist" }, { status: 401 });
         }
-        const { animeId, status, userRating } = await request.json();
+        const body = await request.json();
+
+        const parsed = updateWatchlistSchema.safeParse(body);
+
+        if (!parsed.success) {
+            return NextResponse.json(
+                {
+                    error: parsed.error.issues[0].message,
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+        const { animeId, status, userRating } = parsed.data;
         await ConnectDb();
         const user = await User.findOne({ email: session.user.email });
         if (!user) {

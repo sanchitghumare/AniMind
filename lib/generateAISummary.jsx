@@ -1,4 +1,5 @@
 import TasteProfile from "@/models/TasteProfile";
+import {generateLLMResponse} from "@/lib/llm";
 
 export default async function generateAISummary(userId) {
   try {
@@ -45,43 +46,12 @@ export default async function generateAISummary(userId) {
         }
         `;
 
-    const response = await fetch("http://localhost:11434/api/generate", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            model: "llama3.2",
-            prompt,
-            stream: false,
-            format: "json",
-        }),
-        });
-    
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.log("Ollama Error:", errorText);
-
-        throw new Error(
-            `Ollama API Error: ${response.status} - ${errorText}`
-        );
-    }
-
-    const data = await response.json();
-    // console.log("Ollama Response Data:", data);
-    const text = data.response;
-    console.log("Ollama Response Text:", text);
-    if (!text) {
-      throw new Error("No response from Ollama");
-    }
-
-    const cleanedText = text
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
-
-    const result = JSON.parse(cleanedText);
-
+    const response = await generateLLMResponse({
+      prompt,
+      format: "json"
+    });
+            
+    const result = await response.json();
     await TasteProfile.findOneAndUpdate(
       { userId },
       {

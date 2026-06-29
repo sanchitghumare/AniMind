@@ -126,7 +126,7 @@ export default function ChatPage() {
                 }`}
             >
               <div
-                className={`flex gap-3 max-w-2xl ${message.role === "user"
+                className={`flex gap-3 max-w-2xl py-1 ${message.role === "user"
                   ? "flex-row-reverse"
                   : ""
                   }`}

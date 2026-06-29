@@ -4,6 +4,7 @@ import Watchlist from "@/models/watchlist";
 import ConnectDb from "@/lib/mongodb";
 import Chat from "@/models/chat";
 import retrieveMemories from "@/lib/memory/retrieveMemories";
+import { generateLLMResponse } from "@/lib/llm";
 export default async function handleGeneralChat(userId, message) {
     await ConnectDb();
     const memories = await retrieveMemories(userId, message);
@@ -133,26 +134,8 @@ export default async function handleGeneralChat(userId, message) {
 
         Return only the assistant's reply.
             `;
-    const response = await fetch("http://localhost:11434/api/generate", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            model: "llama3.2",
-            prompt,
-            stream: false,
-        }),
+    const response = await generateLLMResponse({
+      prompt,
     });
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.log("Ollama Error:", errorText);
-        throw new Error(`Ollama API request failed: ${errorText}`);
-    }
-    const result = await response.json();
-    const text = result.response
-    if (!text) {
-        throw new Error("No response from Ollama");
-    }
-    return text.trim();
+    return response;
 }
