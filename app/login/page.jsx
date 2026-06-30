@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 const Login = () => {
     const { data: session } = useSession();
     const router = useRouter();
-    
+
     useEffect(() => {
         if (session) {
             router.push("/dashboard");
@@ -38,7 +38,9 @@ const Login = () => {
                 {/* Sign In Button */}
                 <div>
                     <Button
-                        onClick={() => signIn("github")}
+                        onClick={() => {
+                            signIn("github", { callbackUrl: "/dashboard" });
+                        }}
                         className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-lg hover:shadow-blue-500/20 group"
                     >
                         Sign in with GitHub

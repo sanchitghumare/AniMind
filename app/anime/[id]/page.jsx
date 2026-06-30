@@ -22,7 +22,7 @@ export default async function AnimeDetailsPage({ params }) {
             <div className="relative overflow-hidden rounded-xl border border-zinc-800 shadow-lg">
               <Image
                 src={anime.images.jpg.large_image_url}
-                alt={anime.title}
+                alt={anime.title_english || anime.title}
                 width={320}
                 height={480}
                 className="w-full h-auto object-cover"
@@ -50,7 +50,7 @@ export default async function AnimeDetailsPage({ params }) {
           <div className="space-y-8">
             <div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 line-clamp-3">
-                {anime.title}
+                {anime.title_english || anime.title}
               </h1>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/ui/Navbar";
 import Link from "next/link";
 import { Search, Sparkles, Bookmark, Star } from "lucide-react";
+import {signIn} from "next-auth/react";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -116,17 +117,17 @@ export default function Home() {
             Sign in with GitHub to build your AI anime taste profile and receive recommendations tailored specifically to you.
           </p>
 
-          <Link href="/api/auth/signin">
-            <Button className="w-full sm:w-auto px-8 py-3 text-base font-semibold">
+
+            <Button onClick={() => signIn("github", { callbackUrl: "/dashboard" })} className="w-full sm:w-auto px-8 py-3 text-base font-semibold">
               Sign in with GitHub
             </Button>
-          </Link>
+         
         </div>
       </div>
 
       {/* Footer */}
       <div className="border-t border-zinc-800 py-8 px-4 text-center text-zinc-400 text-sm">
-        <p>Powered by Jikan API • Built with Next.js & AI</p>
+        <p>© 2026 AniMind</p>
       </div>
     </main>
   );
