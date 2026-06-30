@@ -3,9 +3,11 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {toast} from "sonner";
+import { useRouter } from "next/navigation";
 export default function EditProfile({ userData }) {
   const [username, setUsername] = useState(userData.username);
   const [profilePic, setProfilePic] = useState(userData.image);
+  const router = useRouter();
    async function handleUpdateProfile() {
     try {
       const response = await fetch("/api/profile", {
@@ -52,6 +54,12 @@ export default function EditProfile({ userData }) {
           className="w-full"
           value={profilePic}
           onChange={(e) => setProfilePic(e.target.value)}
+          onBlur={(e) => {router.refresh()}}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              router.refresh();
+            }
+          }}
           minLength={3}
         />
       </div>
