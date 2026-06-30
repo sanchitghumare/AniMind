@@ -28,10 +28,10 @@ export default async function ProfilePage() {
             </div>
         );
     }
-    
+
     await ConnectDb();
     const user = await User.findOne({ email: session.user.email });
-    if(!user) {
+    if (!user) {
         return (
             <div className="min-h-screen bg-black text-white">
                 <Navbar />
@@ -42,19 +42,19 @@ export default async function ProfilePage() {
             </div>
         );
     }
-    
+
     const userData = {
         id: user._id.toString(),
         username: user.username,
         email: user.email,
         image: user.profilepic,
     };
-    
+
     const len = await Watchlist.countDocuments({ userId: user._id });
     const recentlyAdded = await Watchlist.find({ userId: user._id }).sort({ createdAt: -1 }).limit(5);
     const tasteProfile = await TasteProfile.findOne({ userId: user._id }).sort({ updatedAt: -1 }).limit(3);
-    
-    if(!tasteProfile) {
+
+    if (!tasteProfile) {
         return (
             <div className="min-h-screen bg-black text-white">
                 <Navbar />
@@ -68,23 +68,22 @@ export default async function ProfilePage() {
             </div>
         );
     }
-    
+
     return (
         <div className="min-h-screen bg-black text-white">
             <Navbar />
-            
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 sm:gap-8">
 
                     {/* LEFT PANEL - Profile Card */}
                     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 sm:p-8 h-fit">
                         <div className="flex flex-col items-center text-center">
-                            <div className="relative w-24 h-24 sm:w-28 sm:h-28 mb-4">
-                                <Image
+                            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border mb-4 border-blue-800/50">
+                                <img
                                     src={userData.image || "/default-profile.png"}
                                     alt="Profile Picture"
-                                    fill
-                                    className="rounded-full border-4 border-blue-600 object-cover"
+                                    className="absolute inset-0 w-full h-full object-cover"
                                 />
                             </div>
 
