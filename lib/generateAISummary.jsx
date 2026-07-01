@@ -52,7 +52,7 @@ export default async function generateAISummary(userId) {
       label: "AI Summary Generation",
     });
             
-    const result = await response.json();
+    const result = JSON.parse(response);
     await TasteProfile.findOneAndUpdate(
       { userId },
       {

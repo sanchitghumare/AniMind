@@ -123,7 +123,7 @@ const generateRecommendation = async (userId) => {
       label: "Recommendation Generation",
     });
   
-    const result = await response.json();
+    const result = JSON.parse(response);
     const validIds = new Set(
       topCandidates.map((anime) => Number(anime.animeId))
     );

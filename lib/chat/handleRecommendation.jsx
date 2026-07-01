@@ -80,7 +80,5 @@ export default async function handleRecommendation(userId,message) {
     label: "Recommendation Chat",
   });
  
-  const result = await response.json();
-
-  return result.response.trim();
+  return response.trim();
 }
