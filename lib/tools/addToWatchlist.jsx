@@ -2,6 +2,7 @@ import ConnectDb from "@/lib/mongodb";
 import Watchlist from "@/models/watchlist";
 import { searchAnime, getAnime } from "@/lib/jikan";
 import findAnime from "@/lib/Anime/findAnime";
+import Anime from "@/models/Anime";
 
 export default async function addToWatchlist(
   userId,
@@ -25,7 +26,26 @@ export default async function addToWatchlist(
       }
 
       anime = await getAnime(searchResults[0].mal_id);
-
+      const embeddingText = `
+        Title: ${anime.title}
+        Synopsis: ${anime.synopsis ?? ""}
+        Genres: ${anime.genres.map(g => g.name).join(", ")}
+        Themes: ${anime.themes.map(t => t.name).join(", ")}
+        Studios: ${anime.studios.map(s => s.name).join(", ")}
+        `;
+      await Anime.create({
+        animeId: anime.mal_id,
+        title: anime.title,
+        alternateTitles: anime.title_synonyms,
+        synopsis: anime.synopsis,
+        image: anime.images.jpg.large_image_url,
+        genres: anime.genres,
+        themes: anime.themes,
+        studios: anime.studios,
+        score: anime.score,
+        episodes: anime.episodes,
+        embeddingText,
+      });
       if (!anime) {
         return {
           success: false,
@@ -57,7 +77,7 @@ export default async function addToWatchlist(
       genres: anime.genres,
       themes: anime.themes,
       episodes: anime.episodes,
-      rating:  anime.score,
+      rating: anime.score,
     });
 
     return {

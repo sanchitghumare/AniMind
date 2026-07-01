@@ -91,57 +91,58 @@ export default async function WatchlistPage({ searchParams }) {
                     <StatusFilter />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
                     {watchlist.map((anime) => (
-                        <Link href={`/anime/${anime.animeId}`} key={anime._id} className="group">
-                            <Card className="overflow-hidden h-full flex flex-col card-hover">
-                                <CardContent className="p-0 flex-1 flex flex-col">
-                                    <div className="relative aspect-2/3 overflow-hidden bg-zinc-800">
-                                        <Image
-                                            src={anime.image}
-                                            alt={anime.title}
-                                            fill
-                                            className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                        />
+
+                        <Card className="overflow-hidden h-full flex flex-col card-hover" key={anime._id}>
+                            <CardContent className="p-0 flex-1 flex flex-col">
+                                <Link href={`/anime/${anime.animeId}`} className="group">
+                                <div className="relative aspect-2/3 overflow-hidden bg-zinc-800">
+                                    <Image
+                                        src={anime.image}
+                                        alt={anime.title}
+                                        fill
+                                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                </div>
+                            </Link>
+                            <div className="p-4 flex flex-col gap-3">
+                                <div className="flex items-start justify-between gap-2">
+                                    <h2 className="font-semibold text-white text-sm sm:text-base line-clamp-2 flex-1">
+                                        {anime.title}
+                                    </h2>
+                                    <div>
+                                        <RemoveWatchlistButton animeId={anime.animeId} />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between text-xs sm:text-sm">
+                                        <span className="text-zinc-400">Rating</span>
+                                        <span className="font-semibold text-blue-400">⭐ {anime.rating ?? "N/A"}</span>
                                     </div>
 
-                                    <div className="p-4 flex flex-col gap-3">
-                                        <div className="flex items-start justify-between gap-2">
-                                            <h2 className="font-semibold text-white text-sm sm:text-base line-clamp-2 flex-1">
-                                                {anime.title}
-                                            </h2>
-                                            <div>
-                                                <RemoveWatchlistButton animeId={anime.animeId} />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between text-xs sm:text-sm">
-                                                <span className="text-zinc-400">Rating</span>
-                                                <span className="font-semibold text-blue-400">⭐ {anime.rating ?? "N/A"}</span>
-                                            </div>
-
-                                            <div className="flex items-center justify-between text-xs sm:text-sm" >
-                                                <span className="text-zinc-400">Your Rate</span>
-                                                <RatingDropdown animeId={anime.animeId} currentRating={anime.userRating} />
-                                            </div>
-
-                                            <div className="text-xs sm:text-sm text-zinc-400">
-                                                {anime.episodes ?? "?"} episodes
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <StatusDropdown currentStatus={anime.status} animeId={anime.animeId} />
-                                        </div>
+                                    <div className="flex items-center justify-between text-xs sm:text-sm" >
+                                        <span className="text-zinc-400">Your Rate</span>
+                                        <RatingDropdown animeId={anime.animeId} currentRating={anime.userRating} />
                                     </div>
-                                </CardContent>
+
+                                    <div className="text-xs sm:text-sm text-zinc-400">
+                                        {anime.episodes ?? "?"} episodes
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <StatusDropdown currentStatus={anime.status} animeId={anime.animeId} />
+                                </div>
+                            </div>
+                        </CardContent>
                             </Card>
-                        </Link>
+                        
                     ))}
-                </div>
             </div>
         </div>
+        </div >
     );
 }
 

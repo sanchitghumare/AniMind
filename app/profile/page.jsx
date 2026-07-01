@@ -110,7 +110,7 @@ export default async function ProfilePage() {
                                 📚 Watchlist Stats
                             </h2>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                                 <div className="bg-zinc-800 rounded-lg p-4">
                                     <p className="text-zinc-400 text-sm mb-1">Total Saved</p>
                                     <p className="text-2xl sm:text-3xl font-bold text-blue-400">{len}</p>
@@ -146,12 +146,12 @@ export default async function ProfilePage() {
                                 {tasteProfile.aiSummary}
                             </p>
 
-                            <div>
+                            <div className="w-full max-w-full overflow-hidden">
                                 <h3 className="font-semibold mb-3 text-white text-sm sm:text-base">
                                     Explore Next
                                 </h3>
 
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-col overflow-x-auto sm:flex-wrap gap-2 pb-2 scrollbar-none w-full">
                                     {tasteProfile.recommendationDirections.map((item) => (
                                         <Badge key={item} className="bg-blue-600/20 text-blue-300 border border-blue-500/30">
                                             {item}

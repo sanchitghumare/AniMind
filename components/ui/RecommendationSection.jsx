@@ -46,7 +46,7 @@ export default function RecommendationSection() {
                 🎯 Personalized For You
             </h1>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
                 {recommendations.map((anime) => (
                     <Link href={`/anime/${anime.animeId}`} key={anime.animeId} className="group">
                         <Card className="overflow-hidden h-full card-hover">

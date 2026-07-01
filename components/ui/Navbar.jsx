@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { Bookmark, Sparkles, User, LogOut, Menu, X } from "lucide-react";
+import { Bookmark, Sparkles, User, LogOut, Menu, X,Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -38,6 +38,7 @@ export default function Navbar() {
             {...(session ? { href: "/dashboard" } : { href: "/" })}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all duration-200"
           >
+            <Home size={18} />
             Home
           </Link>
 
@@ -129,6 +130,7 @@ export default function Navbar() {
                 onClick={closeMobileMenu}
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-all duration-200"
               >
+                <Home size={20} />
                 Home
               </Link>
 

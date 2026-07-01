@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import BackButton from "@/components/Backbutton";
 import WatchlistButton from "@/components/ui/watchlistbutton";
 import Navbar from "@/components/ui/Navbar";
 
@@ -49,9 +50,12 @@ export default async function AnimeDetailsPage({ params }) {
           {/* Right Column */}
           <div className="space-y-8">
             <div>
+              <div className="flex items-center justify-between mb-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 line-clamp-3">
                 {anime.title_english || anime.title}
               </h1>
+              <BackButton />
+              </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
                 <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">

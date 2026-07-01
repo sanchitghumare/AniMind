@@ -64,7 +64,7 @@ export default function Home() {
 
       {/* Features Grid */}
       <div className="max-w-6xl mx-auto px-4 mb-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Feature 1 */}
           <div className="group bg-zinc-900 border border-zinc-800 rounded-xl p-6 sm:p-8 transition-all duration-300 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10">
             <div className="flex items-start justify-between mb-4">
