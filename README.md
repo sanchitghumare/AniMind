@@ -199,6 +199,7 @@ AniMind uses a planner-executor architecture.
   <img src="Screenshots/Profile1.png" width="48%">
   <img src="Screenshots/Profile2.png" width="48%">
 </p>
+
 ### Anime Details
 
 ![Anime Details](Screenshots/Details.png)
