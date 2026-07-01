@@ -1,36 +1,269 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🎌 AniMind
 
-## Getting Started
+**AniMind** is an AI-powered anime recommendation platform that goes beyond traditional anime databases by providing personalized recommendations, conversational AI, long-term memory, and intelligent watchlist management.
 
-First, run the development server:
+🌐 **Live Demo:** https://ani-mind-nine.vercel.app
+
+---
+
+## ✨ Features
+
+### 🤖 AI Anime Assistant
+
+- Conversational AI powered by LLMs
+- Answers anime-related questions
+- Personalized responses using your anime taste
+- Remembers important information across conversations
+
+---
+
+### 🎯 Personalized Recommendations
+
+- AI-generated recommendations based on:
+  - Favorite anime
+  - Genres
+  - Themes
+  - User ratings
+- Compatibility scoring
+- Recommendation explanations
+- Automatic regeneration when your taste profile changes
+
+---
+
+### 📚 Smart Watchlist
+
+- Add anime using natural language
+- Update watching status
+- Rate anime
+- Remove anime
+- AI understands commands like:
+
+> Add Naruto to my watchlist
+
+> Rate Monster 10
+
+> Mark Vinland Saga as completed
+
+---
+
+### 🧠 Long-Term Memory
+
+AniMind remembers meaningful user information such as:
+
+- Favorite genres
+- Preferences
+- Goals
+- Personal facts
+
+while ignoring temporary conversation.
+
+---
+
+### 🔍 Intelligent Anime Search
+
+- Search anime using Jikan API
+- Local MongoDB caching
+- Automatic database expansion
+- Detailed anime pages
+
+---
+
+### 👤 Personalized Taste Profile
+
+Automatically generates:
+
+- Favorite genres
+- Favorite themes
+- Top-rated anime
+- AI summary of your taste
+- Recommendation directions
+
+---
+
+### 🔒 Authentication
+
+- GitHub OAuth
+- Secure sessions with NextAuth
+
+---
+
+### ⚡ Performance
+
+- MongoDB indexing
+- Recommendation caching
+- Redis rate limiting
+- Optimized API usage
+
+---
+
+## 🏗 Architecture
+
+AniMind uses a planner-executor architecture.
+
+```
+                     ┌─────────────── Client ───────────────┐
+                     │                                      │
+                     │     Next.js + React + Tailwind       │
+                     └───────────────────┬──────────────────┘
+                                         │
+                                         ▼
+                              API Route (/api/chat)
+                                         │
+                                         ▼
+                           Planner (LLM Decision Layer)
+                                         │
+                 ┌───────────────────────┼────────────────────────┐
+                 │                       │                        │
+                 ▼                       ▼                        ▼
+           Tool Executor          Intent Router           Memory Manager
+                 │                       │                        │
+                 ▼                       ▼                        ▼
+      Watchlist CRUD        Chat / Search / Recommend      Memory Extractor
+                 │                       │                        │
+                 └──────────────┬────────┴──────────────┬─────────┘
+                                ▼                       ▼
+                        MongoDB Atlas              Groq (Llama 4)
+                                │
+                                ▼
+                           Jikan API Cache
+```
+
+## System Components
+
+- **Planner** – Determines user intent, tool execution, and memory persistence.
+- **Executor** – Executes watchlist actions using structured tool calls.
+- **Intent Router** – Routes requests to Chat, Search, Recommendation, Profile, or Watchlist handlers.
+- **Memory Manager** – Stores only meaningful long-term user information.
+- **Recommendation Engine** – Uses taste profiles and watchlist history to personalize suggestions.
+- **Anime Cache** – Stores anime fetched from Jikan in MongoDB to reduce external API calls.
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- Next.js 16
+- React
+- Tailwind CSS
+- shadcn/ui
+
+### Backend
+
+- Next.js Route Handlers
+- MongoDB Atlas
+- Mongoose
+
+### AI
+
+- Groq
+- Llama 4 Scout
+- Prompt Engineering
+- Planner–Executor Architecture
+- Long-Term Memory
+
+### Authentication
+
+- NextAuth.js
+- GitHub OAuth
+
+### APIs
+
+- Jikan API
+
+### Infrastructure
+
+- Upstash Redis
+- Vercel
+
+---
+
+## 📸 Screenshots
+
+### Home
+
+ ![Home](Screenshots/Home.png)
+
+### AI Chat
+<p align="center">
+  <img src="Screenshots/Chat1.png" width="48%">
+  <img src="Screenshots/Chat2.png" width="48%">
+</p>
+
+### Watchlist
+
+![Watchlist](Screenshots/Watchlist.png)
+
+### Profile
+<p align="center">
+  <img src="Screenshots/Profile1.png" width="48%">
+  <img src="Screenshots/Profile2.png" width="48%">
+</p>
+
+### Anime Details
+
+![Anime Details](Screenshots/Details.png)
+
+---
+
+## 🚀 Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/yourusername/animind.git
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Create `.env.local`
+
+```env
+MONGODB_URI=
+
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
+
+GITHUB_ID=
+GITHUB_SECRET=
+
+GROQ_API_KEY=
+GROQ_MODEL=
+
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+```
+
+Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📌 Future Improvements
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Streaming AI responses
+- Progressive Web App (PWA)
+- Push notifications
+- Offline watchlist
+- Better recommendation explanations
+- Social features
+- Anime collections
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 👨‍💻 Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Sanchit Ghumare**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+GitHub: https://github.com/yourusername
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ⭐ If you found this project interesting, consider starring the repository!
