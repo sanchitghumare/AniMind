@@ -22,7 +22,6 @@ export const updateWatchlistSchema = z.object({
   status: z.enum([
     "watching",
     "completed",
-    "on_hold",
     "dropped",
     "plan_to_watch",
   ]).optional(),
